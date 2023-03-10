@@ -4,7 +4,6 @@ import car.domain.Car;
 import car.domain.Cars;
 import car.domain.Name;
 import car.domain.Position;
-import car.ui.View;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -12,9 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,11 +22,8 @@ class CarTest {
 
     @BeforeEach
     void setUp() {
-        List<Car> participants = new ArrayList<>();
-        participants.add(new Car(new Name("씽씽카"), new Position(3)));
-        participants.add(new Car(new Name("쏘카"), new Position(1)));
-        participants.add(new Car(new Name("그린카"), new Position(5)));
-        cars = Cars.of(participants);
+        String carNames = "씽씽카,쏘카,그린카";
+        cars = Cars.of(carNames);
     }
 
     @ParameterizedTest
@@ -58,15 +51,6 @@ class CarTest {
         assertThatThrownBy(() -> new Name(failCase))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("자동차 이름은 5자 미만만 가능 합니다. name = " + failCase);
-    }
-
-    @Test
-    void 자동차의_위치상태를_출력한다() {
-        // given
-        Car car = new Car(new Name("씽씽카"), new Position(3));
-        View view = View.from(car);
-        String actual = view.printStatus();
-        assertThat(actual).isEqualTo("씽씽카 : ---");
     }
 
     @Test
@@ -105,5 +89,18 @@ class CarTest {
 
         //then
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void 자동차_위치값을_증가시킨다() {
+
+        //given
+        Car car = new Car(new Name("쏘카"));
+
+        //when
+        car.move();
+
+        //then
+        assertThat(car.getCurrentPosition()).isEqualTo(1);
     }
 }
